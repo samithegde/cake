@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "Birthdays",
+  "short_name": "Birthdays",
+  "description": "Keep the birthdays you care about close, year after year.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#111026",
+  "theme_color": "#111026",
+  "icons": [
+    {
+      "src": "/icons/birthday.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
