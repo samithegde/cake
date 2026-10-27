@@ -24,7 +24,9 @@ const dateFromKey = (key) => {
   return makeDate(year, month - 1, day)
 }
 const birthdayDateForYear = (event, year) => {
-  const [, month, day] = event.date.split('-').map(Number)
+  const [, birthMonth, birthDay] = event.date?.split('-').map(Number) ?? []
+  const month = event.month ?? birthMonth
+  const day = event.day ?? birthDay
   const lastDay = new Date(year, month, 0).getDate()
   return makeDate(year, month - 1, Math.min(day, lastDay))
 }
@@ -38,7 +40,12 @@ const nextBirthday = (event, from = today) => {
     : birthdayDateForYear(event, from.getFullYear() + 1)
 }
 const birthdayLabel = (event) => `${event.name}’s birthday`
-const birthdayAge = (event, year) => year - Number(event.date.slice(0, 4))
+const birthdayAge = (event, year) =>
+  event.birthYear
+    ? year - event.birthYear
+    : event.date
+      ? year - Number(event.date.slice(0, 4))
+      : null
 const formatMonth = (date) =>
   date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 const formatLongDate = (date) =>
@@ -166,15 +173,31 @@ function WeekStrip({ events, selectedDate, onSelectDate, onShiftWeek }) {
 
 function EventDialog({ onClose, onSave }) {
   const [name, setName] = useState('')
-  const [birthday, setBirthday] = useState('')
+  const [month, setMonth] = useState(String(today.getMonth() + 1))
+  const [day, setDay] = useState(String(today.getDate()))
+  const [ageMode, setAgeMode] = useState('year')
+  const [ageDetail, setAgeDetail] = useState('')
 
   function handleSubmit(event) {
     event.preventDefault()
-    if (!name.trim()) return
+    const monthNumber = Number(month)
+    const dayNumber = Number(day)
+    const maxDay = new Date(2000, monthNumber, 0).getDate()
+    if (!name.trim() || dayNumber < 1 || dayNumber > maxDay || !ageDetail) return
+
+    const birthYear = ageMode === 'year'
+      ? Number(ageDetail)
+      : today.getFullYear() - Number(ageDetail) - (
+        monthNumber - 1 > today.getMonth() ||
+        (monthNumber - 1 === today.getMonth() && dayNumber > today.getDate()) ? 1 : 0
+      )
+
     onSave({
       id: Date.now(),
       name: name.trim(),
-      date: birthday,
+      month: monthNumber,
+      day: dayNumber,
+      birthYear,
     })
   }
 
@@ -190,9 +213,50 @@ function EventDialog({ onClose, onSave }) {
         </div>
         <label className="field-label" htmlFor="birthday-name">Who’s celebrating?</label>
         <input autoFocus className="text-input" id="birthday-name" onChange={(event) => setName(event.target.value)} placeholder="Their name" required value={name} />
-        <label className="field-label" htmlFor="birthday-date">Date of birth</label>
-        <input className="text-input" id="birthday-date" max={dateKey(today)} onChange={(event) => setBirthday(event.target.value)} required type="date" value={birthday} />
-        <p className="form-note">Birthdays repeat every year. The birth year helps track milestone ages.</p>
+        <span className="field-label">Birthday</span>
+        <div className="birthday-date-fields">
+          <label className="sr-only" htmlFor="birthday-month">Birth month</label>
+          <select
+            className="text-input"
+            id="birthday-month"
+            onChange={(event) => {
+              const nextMonth = Number(event.target.value)
+              setMonth(event.target.value)
+              setDay((current) => String(Math.min(
+                Number(current),
+                new Date(2000, nextMonth, 0).getDate(),
+              )))
+            }}
+            value={month}
+          >
+            {Array.from({ length: 12 }, (_, index) => (
+              <option key={index + 1} value={index + 1}>
+                {makeDate(2000, index, 1).toLocaleDateString('en-US', { month: 'long' })}
+              </option>
+            ))}
+          </select>
+          <label className="sr-only" htmlFor="birthday-day">Birth day</label>
+          <input className="text-input" id="birthday-day" max={new Date(2000, Number(month), 0).getDate()} min="1" onChange={(event) => setDay(event.target.value)} placeholder="Day" required type="number" value={day} />
+        </div>
+        <span className="field-label">Age details</span>
+        <div aria-label="Age detail type" className="age-mode-switch">
+          <button aria-pressed={ageMode === 'year'} className={ageMode === 'year' ? 'age-mode-active' : ''} onClick={() => { setAgeMode('year'); setAgeDetail('') }} type="button">Birth year</button>
+          <button aria-pressed={ageMode === 'age'} className={ageMode === 'age' ? 'age-mode-active' : ''} onClick={() => { setAgeMode('age'); setAgeDetail('') }} type="button">Current age</button>
+        </div>
+        <label className="sr-only" htmlFor="birthday-age-detail">{ageMode === 'year' ? 'Birth year' : 'Current age'}</label>
+        <input
+          autoComplete="off"
+          className="text-input"
+          id="birthday-age-detail"
+          max={ageMode === 'year' ? today.getFullYear() : 120}
+          min={ageMode === 'year' ? 1900 : 0}
+          onChange={(event) => setAgeDetail(event.target.value)}
+          placeholder={ageMode === 'year' ? 'Enter birth year' : 'Enter current age'}
+          required
+          type="number"
+          value={ageDetail}
+        />
+        <p className="form-note">Birthdays repeat every year. Age is only used for milestone reminders.</p>
         <div className="dialog-actions">
           <button className="quiet-button" onClick={onClose} type="button">Cancel</button>
           <button className="primary-button" type="submit"><Plus size={16} /> Add birthday</button>
@@ -361,7 +425,7 @@ function App() {
                         <span className="agenda-date">{date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' })}</span>
                         <span className="agenda-mark pink" />
                         <span className="agenda-title">{birthdayLabel(event)}</span>
-                        <span className="agenda-time">{age > 0 ? `Turning ${age}` : 'Birthday'}</span>
+                        <span className="agenda-time">{age !== null ? `Turning ${age}` : 'Birthday'}</span>
                       </button>
                     )
                   }) : (
@@ -386,7 +450,7 @@ function App() {
                         <div className="detail-event-icon"><Cake size={19} /></div>
                         <div className="detail-event-info">
                           <strong>{event.name}</strong>
-                          <span>{birthdayAge(event, selected.getFullYear()) > 0 ? `Celebrating ${birthdayAge(event, selected.getFullYear())}` : 'Birthday today'}</span>
+                          <span>{birthdayAge(event, selected.getFullYear()) !== null ? `Celebrating ${birthdayAge(event, selected.getFullYear())}` : 'Birthday today'}</span>
                         </div>
                         <button aria-label={`Remove ${birthdayLabel(event)}`} className="remove-event" onClick={() => setEvents((current) => current.filter((item) => item.id !== event.id))}><X size={14} /></button>
                       </div>
@@ -409,7 +473,7 @@ function App() {
                     <button className="upcoming-event" key={event.id} onClick={() => selectDate(dateKey(date))} type="button">
                       <div className="upcoming-date"><strong>{date.getDate()}</strong><span>{date.toLocaleDateString('en-US', { month: 'short' })}</span></div>
                       <span className="upcoming-mark pink" />
-                      <span className="upcoming-copy"><strong>{event.name}</strong><small>{date.toLocaleDateString('en-US', { weekday: 'short' })} <span>·</span> {age > 0 ? `Turning ${age}` : 'Birthday'}</small></span>
+                      <span className="upcoming-copy"><strong>{event.name}</strong><small>{date.toLocaleDateString('en-US', { weekday: 'short' })} <span>·</span> {age !== null ? `Turning ${age}` : 'Birthday'}</small></span>
                     </button>
                   )
                 }) : <p className="no-upcoming">{query ? 'No matching birthdays.' : 'Add a birthday to get started.'}</p>}

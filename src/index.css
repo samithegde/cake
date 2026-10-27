@@ -184,6 +184,11 @@ kbd { color: #8985a4; border: 1px solid rgba(230,225,255,.12); border-radius: 4p
 .text-input { width: 100%; min-width: 0; height: 37px; border: 1px solid rgba(219, 213, 255, .13); border-radius: 7px; padding: 0 10px; color: #f0edf9; background: rgba(11, 10, 28, .36); outline: 0; color-scheme: dark; font-size: 11px; }
 .text-input::placeholder { color: #77738e; }
 .text-input:focus { border-color: rgba(189, 163, 255, .58); box-shadow: 0 0 0 3px rgba(160, 132, 232, .1); }
+.birthday-date-fields { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 9px; }
+.age-mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border: 1px solid rgba(219, 213, 255, .12); border-radius: 9px; background: rgba(11, 10, 28, .3); }
+.age-mode-switch button { min-height: 34px; border: 0; border-radius: 6px; color: #aaa5c0; background: transparent; font-size: 10px; }
+.age-mode-switch button.age-mode-active { color: #f0eaff; background: rgba(163, 138, 232, .22); box-shadow: inset 0 0 0 1px rgba(195, 175, 255, .13); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .form-note { color: #8985a1; font-size: 10px; line-height: 1.5; margin: 0; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 
@@ -218,7 +223,7 @@ kbd { color: #8985a4; border: 1px solid rgba(230,225,255,.12); border-radius: 4p
   .mobile-week-strip { display: grid; grid-template-columns: 24px repeat(7, minmax(0, 1fr)) 24px; align-items: center; gap: 1px; min-height: 96px; padding: 5px 8px 13px; border-bottom: 1px solid var(--line); box-shadow: 0 5px 12px rgba(0,0,0,.07); }
   .week-shift { display: grid; place-items: center; width: 28px; height: 38px; border: 0; color: #aaa5c5; background: transparent; border-radius: 7px; }
   .week-shift:hover { background: rgba(255,255,255,.07); }
-  .week-day { display: grid; justify-items: center; align-content: center; gap: 6px; width: 100%; max-width: 52px; height: 70px; justify-self: center; border: 1px solid transparent; border-radius: 25px; color: #b2aec8; background: rgba(255,255,255,.055); }
+  .week-day { display: grid; justify-items: center; align-content: center; gap: 6px; width: 100%; min-width: 0; height: 70px; justify-self: center; border: 1px solid transparent; border-radius: 25px; color: #b2aec8; background: rgba(255,255,255,.055); }
   .week-day > span { font: 600 9px 'Manrope', sans-serif; text-transform: uppercase; }
   .week-day > strong { color: #efedfa; font: 600 13px 'Manrope', sans-serif; }
   .week-day-selected { border-color: rgba(232,224,255,.8); color: #f4edff; background: rgba(157,129,223,.2); box-shadow: 0 0 16px rgba(169,137,242,.12); }
@@ -260,6 +265,7 @@ kbd { color: #8985a4; border: 1px solid rgba(230,225,255,.12); border-radius: 4p
   .upcoming-header { margin-bottom: 12px; }
   .upcoming-header h2 { font: 600 21px Georgia, serif; }
   .upcoming-header .eyebrow { font-size: 8px; }
+  .upcoming-card .see-all { display: none; }
   .upcoming-event { min-height: 70px; gap: 12px; padding: 11px 8px; border: 1px solid rgba(216,210,255,.07); border-radius: 13px; background: rgba(255,255,255,.025); margin-bottom: 8px; }
   .upcoming-date { width: 40px; }
   .upcoming-date strong { font-size: 17px; }
@@ -285,7 +291,7 @@ kbd { color: #8985a4; border: 1px solid rgba(230,225,255,.12); border-radius: 4p
   .view-switch button { width: 30px; height: 28px; }
   .today-button { min-height: 36px; }
   .day-cell { height: clamp(52px, 14vw, 58px); }
-  .detail-heading h2 { font-size: 11px; }
+  .detail-heading h2 { font-size: 24px; }
 }
 @media (max-width: 360px) {
   .calendar-heading h1 { font-size: 23px; }
