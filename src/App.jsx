@@ -334,8 +334,7 @@ function App() {
       <div className="workspace">
         <aside className="sidebar glass-panel">
           <div className="sidebar-brand">
-            <div className="brand-mark"><CalendarDays size={20} strokeWidth={1.8} /></div>
-            <span>Birthdays</span>
+            <img className="brand-wordmark" src="/icons/cakeswordmark.png" alt="cakes" />
           </div>
 
           <button className="create-button" onClick={() => openDialog()} type="button">
@@ -368,7 +367,7 @@ function App() {
 
         <section className={`main-panel glass-panel ${mobileScreen === 'month' ? 'show-mobile-month' : ''}`}>
           <header className="topbar">
-            <div className="breadcrumb"><span>Birthdays</span><span className="breadcrumb-slash">/</span><strong>{view === 'month' ? 'Month view' : 'Agenda view'}</strong></div>
+            <div className="breadcrumb"><span>cakes</span><span className="breadcrumb-slash">/</span><strong>{view === 'month' ? 'Month view' : 'Agenda view'}</strong></div>
             <div className="topbar-actions">
               <label className="search-box"><Search size={16} /><input aria-label="Search birthdays" onChange={(event) => setQuery(event.target.value)} placeholder="Search birthdays" value={query} /><kbd>⌘ K</kbd></label>
             </div>
@@ -377,7 +376,7 @@ function App() {
           <div className="mobile-topbar">
             <button className="mobile-today" onClick={goToToday} type="button">Today</button>
             <div className="mobile-date-heading">
-              <span className="mobile-app-label">BIRTHDAYS</span>
+              <span className="mobile-app-label">CAKES</span>
               <strong>{selected.toLocaleDateString('en-US', { weekday: 'long' })}</strong>
               <span>{selected.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
             </div>

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'birthdays-shell-v1'
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/birthday.svg']
+const CACHE_NAME = 'cakes-shell-v2'
+const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/cakesapp.png', '/icons/cakesicon.png', '/icons/cakeswordmark.png']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

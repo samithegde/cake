@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Birthdays",
-  "short_name": "Birthdays",
+  "name": "cakes",
+  "short_name": "cakes",
   "description": "Keep the birthdays you care about close, year after year.",
   "start_url": "/",
   "scope": "/",
@@ -11,10 +11,16 @@
   "theme_color": "#111026",
   "icons": [
     {
-      "src": "/icons/birthday.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/cakesapp.png",
+      "sizes": "1000x1000",
+      "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/cakesicon.png",
+      "sizes": "1000x1000",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
